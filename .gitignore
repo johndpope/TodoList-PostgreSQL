@@ -1,3 +1,5 @@
 Packages
 .DS_Store
 TodoList.xcodeproj
+Tests
+.build

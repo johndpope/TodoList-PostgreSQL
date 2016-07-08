@@ -17,40 +17,153 @@
 import Foundation
 import TodoListAPI
 
-struct TodoList : TodoListAPI {
+import SQL
+import PostgreSQL
+
+/**
+ The PostgreSQL database should contain the following schema:
+ 
+ CREATE TABLE todos
+ (
+	tid 		bigserial 		PRIMARY KEY,
+	title		varchar(256)	NOT NULL,
+	owner_id 	varchar(128)	NOT NULL,
+	completed	integer			NOT NULL,
+	ordering	integer			NOT NULL
+ );
+ 
+*/
+
+public final class TodoList : TodoListAPI {
     
-    func count(withUserID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
-        // TODO:
+    let connectionString = "postgres://localhost:5432/todolist"
+    
+    public func count(withUserID userID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
+    
+        let query = "SELECT COUNT(*) FROM todos WHERE owner_id=\(userID)"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute("SELECT * FROM todos")
+            
+            
+        } catch {
+            
+        }
+        
     }
     
-    func clear(withUserID: String?, oncompletion: (ErrorProtocol?) -> Void) {
-        // TODO:
+    public func clear(withUserID ownerID: String?, oncompletion: (ErrorProtocol?) -> Void) {
+        
+        let query = "DELETE FROM todos WHERE owner=\(ownerID)"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
     }
     
-    func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
-        // TODO:
+    public func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
+        
+        let query = "TRUNCATE TABLE todos"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
     }
     
-    func get(withUserID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
-        // TODO:
+    public func get(withUserID userID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
+        
+        let query = "SELECT * FROM todos WHERE owner_id=\(userID)"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
+        
     }
     
-    func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-        // TODO:
+    public func get(withUserID userID: String?, withDocumentID documentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+        
+        let query = "SELECT * FROM todos WHERE ownerid=\(userID) AND tid=\(documentID)"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
+        
     }
     
-    func add(userID: String?, title: String, order: Int, completed: Bool,
+    public func add(userID: String?, title: String, order: Int, completed: Bool,
              oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-        // TODO:
+        
+        let query = "INSERT INTO todos (title, owner_id, completed, orderno) VALUES (\(title), \(userID), \(completed), \(order));"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
+        
     }
     
-    func update(documentID: String, userID: String?, title: String?, order: Int?,
+    public func update(documentID: String, userID: String?, title: String?, order: Int?,
                 completed: Bool?, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-        // TODO:
+        
+        let query = "UPDATE todos SET completed=\(completed) WHERE tid=\(documentID)"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
+        
     }
     
-    func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
-        // TODO:
+    public func delete(withUserID userID: String?, withDocumentID documentID: String, oncompletion: (ErrorProtocol?) -> Void) {
+    
+        let query = "DELETE FROM todos WHERE owner_id=\(userID) AND tid=\(documentID)"
+        
+        do {
+            let connection = try Connection(URI(connectionString))
+            
+            let result = try connection.execute(query)
+            
+            
+        } catch {
+            
+        }
+        
     }
     
 }
