@@ -16,7 +16,6 @@
 
 import Foundation
 import TodoListAPI
-
 import SQL
 import PostgreSQL
 
@@ -36,21 +35,27 @@ import PostgreSQL
 
 public final class TodoList : TodoListAPI {
     
-    let connectionString = "postgres://localhost:5432/todolist"
+    static let defaultPostgreHost = "localhost"
+    static let defaultPort = 5432
+    static let defaultDatabaseName = "todolist"
+    static let defaultUsername = ""
+    static let defaultPassword = ""
+    
+    //let connectionString = "postgres://localhost:5432/todolist"
     
     public func count(withUserID userID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
     
         let query = "SELECT COUNT(*) FROM todos WHERE owner_id=\(userID)"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
         
     }
     
@@ -58,45 +63,45 @@ public final class TodoList : TodoListAPI {
         
         let query = "DELETE FROM todos WHERE owner=\(ownerID)"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
     }
     
     public func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
         
         let query = "TRUNCATE TABLE todos"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
     }
     
     public func get(withUserID userID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
         
         let query = "SELECT * FROM todos WHERE owner_id=\(userID)"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
         
     }
     
@@ -104,15 +109,15 @@ public final class TodoList : TodoListAPI {
         
         let query = "SELECT * FROM todos WHERE ownerid=\(userID) AND tid=\(documentID)"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
         
     }
     
@@ -121,15 +126,15 @@ public final class TodoList : TodoListAPI {
         
         let query = "INSERT INTO todos (title, owner_id, completed, orderno) VALUES (\(title), \(userID), \(completed), \(order));"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
         
     }
     
@@ -138,15 +143,15 @@ public final class TodoList : TodoListAPI {
         
         let query = "UPDATE todos SET completed=\(completed) WHERE tid=\(documentID)"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
         
     }
     
@@ -154,15 +159,15 @@ public final class TodoList : TodoListAPI {
     
         let query = "DELETE FROM todos WHERE owner_id=\(userID) AND tid=\(documentID)"
         
-        do {
-            let connection = try Connection(URI(connectionString))
-            
-            let result = try connection.execute(query)
-            
-            
-        } catch {
-            
-        }
+//        do {
+//            let connection = try Connection(URI(connectionString))
+//            
+//            let result = try connection.execute(query)
+//            
+//            
+//        } catch {
+//            
+//        }
         
     }
     
