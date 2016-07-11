@@ -45,7 +45,7 @@ public final class TodoList : TodoListAPI {
         do {
             let connection = try Connection(URI(connectionString))
             
-            let result = try connection.execute("SELECT * FROM todos")
+            let result = try connection.execute(query)
             
             
         } catch {
