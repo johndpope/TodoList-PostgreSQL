@@ -292,22 +292,63 @@ public final class TodoList : TodoListAPI {
     public func update(documentID: String, userID: String?, title: String?, order: Int?,
                 completed: Bool?, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         
-//        let userID = userID ?? defaultUsername
-//        let query = "UPDATE todos SET title = '\(title)' OR order = \(order) OR completed=\(completed) WHERE tid=\(documentID) AND user_id='\(userID)'"
-//        
-//        do {
-//            print("(\(#function) at \(#line)) - Server status")
-//            print(self.postgreConnection.internalStatus)
-//            
-//            let result = try self.postgreConnection.execute(query)
-//            
-//            print("(\(#function) at \(#line)) - Execution of the query status: ")
-//            print(result.status)
-//            
-//            
-//        } catch {
-//            oncompletion(nil, error)
-//        }
+        let userID = userID ?? defaultUsername
+        
+        var query = "UPDATE todos SET"
+        var updateValues = [String]()
+        if let title = title  {
+            updateValues.append(" title = '\(title)' ")
+        }
+        
+        if let order = order  {
+            updateValues.append(" \(ORDER) = \(order) ")
+        }
+        
+        if let completed = completed  {
+            updateValues.append(" completed = \(completed) ")
+        }
+        
+        let joiner = ","
+        let joinedString = updateValues.joined(separator: joiner)
+        
+        query.append(joinedString)
+        let condition = "WHERE tid='\(documentID)' AND user_id='\(userID)' RETURNING title, ordering, completed;"
+        query.append(condition)
+        
+//        let title = title ?? "NULL"
+//        let newOrder: AnyObject = order == nil ? "NULL": order!
+//        let newCompleted: AnyObject = completed == nil ? "NULL" : completed!
+        
+//        let query = "UPDATE todos SET title = COALESCE('\(title)',title), \(ORDER) = COALESCE('\(newOrder)',\(ORDER)), completed= COALESCE('\(newCompleted)', completed) WHERE tid='\(documentID)' AND user_id='\(userID)' RETURNING title, ordering, completed;"
+        
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+//            print(newOrder)
+//            print(newCompleted)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.TuplesOK else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            
+            let title = try String(result[0].data(TITLE))
+            let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
+            guard let order = try Int(String(result[0].data(ORDER))) else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            let todoItem = TodoItem(documentID: documentID, userID: userID, order: order, title: title, completed: completed)
+            oncompletion(todoItem, nil)
+            
+        } catch {
+            oncompletion(nil, error)
+        }
         
     }
     
