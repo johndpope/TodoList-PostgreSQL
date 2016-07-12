@@ -19,6 +19,7 @@ import TodoListAPI
 import SQL
 import PostgreSQL
 
+
 /**
  The PostgreSQL database should contain the following schema:
 
@@ -347,7 +348,7 @@ public final class TodoList: TodoListAPI {
     }
 
     public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
-
+        
         let userID = withUserID ?? defaultUsername
         let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID)"
 
