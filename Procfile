@@ -1,1 +1,1 @@
-web: KituraTodoList
+web: TodoList
