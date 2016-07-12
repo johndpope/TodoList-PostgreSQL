@@ -26,7 +26,7 @@ import PostgreSQL
  (
 	tid 		bigserial 		PRIMARY KEY,
 	title		varchar(256)	NOT NULL,
-	owner_id 	varchar(128)	NOT NULL,
+	user_id 	varchar(128)	NOT NULL,
 	completed	integer			NOT NULL,
 	ordering	integer			NOT NULL
  );
@@ -38,15 +38,16 @@ public final class TodoList : TodoListAPI {
     static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
     static let defaultDatabaseName = "todolist"
-    static let defaultUsername = "chiahuang"
+    static let defaultUsername = ""
     static let defaultPassword = ""
-//    let postgreConnection: PostgreSQL.Connection!
+    var postgreConnection: PostgreSQL.Connection!
     
     var host: String = TodoList.defaultPostgreHost
     var port: Int32 = TodoList.defaultPostgrePort
     var password: String = TodoList.defaultPassword
     var username: String = TodoList.defaultUsername
     var database : String = TodoList.defaultDatabaseName
+    var defaultUsername = "default"
     
     //let connectionString = "postgres://localhost:5432/todolist"
     
@@ -55,84 +56,130 @@ public final class TodoList : TodoListAPI {
                 port: Int32 = TodoList.defaultPostgrePort,
                 username: String? = defaultUsername, password: String? = defaultPassword) {
         
-//        do {
+        do {
             self.database = database
             self.host = host
             self.port = Int32(port)
             self.username = username!
             self.password = password!
+            let connectionString = try URI("postgres://\(host):\(port)/\(database)")
+            postgreConnection = try PostgreSQL.Connection(connectionString)
             
-//            self.postgreConnection = try PostgreSQL.Connection(URI("postgres://\(username):\(password)@\(host):\(port)/\(database)"))
+            // Open the server
+            try postgreConnection.open()
         
-//        } catch {
-//            Log.error("Postgre is not available on host: \(host) and port: \(port)")
-//            print("Failed to connect in local")
-//        }
+            // Check the status
+            print("(\(#function) at \(#line)) - Server status")
+            print(postgreConnection.internalStatus)
+            
+        } catch {
+            print("Failed to connect in local")
+        }
     }
     
     public init(_ dbConfiguration: DatabaseConfiguration) {
-        
-//        do {
-        self.host = dbConfiguration.host!
-        self.port = Int32(dbConfiguration.port!)
-        self.username = dbConfiguration.username!
-        self.password = dbConfiguration.password!
-        
-//        self.postgreConnection = try PostgreSQL.Connection(URI("postgres://\(username):\(password)@\(host):\(port)/\(database)"))
-//        } catch {
-//            Log.error("Postgre is not available on host: \(host) and port: \(port)")
-//            print("Failed to connect in configuration")
+    
+        do {
+            self.host = dbConfiguration.host!
+            self.port = Int32(dbConfiguration.port!)
+            self.username = dbConfiguration.username!
+            self.password = dbConfiguration.password!
+            let connectionString = try URI("postgres://\(host):\(port)/\(database)")
+            postgreConnection = try PostgreSQL.Connection(connectionString)
+            
+            // Open
+            try postgreConnection.open()
+            
+            // Check the server status
+            print(postgreConnection.internalStatus)
+            
+        } catch {
+            print("Failed to connect in configuration")
+        }
+    }
 
-//        }
+    public func count(withUserID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
+        
+        let userID = withUserID ?? defaultUsername
+        
+        let query = "SELECT COUNT(*) FROM todos WHERE user_id='\(userID)'"
+        
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.TuplesOK else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            
+            guard let count = try Int(String(result[0].data("count"))) else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            oncompletion(count, nil)
+            
+        } catch {
+            oncompletion(nil, error)
+        }
+        
     }
     
-    public func count(withUserID userID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
-    
-//        let query = "SELECT COUNT(*) FROM todos WHERE owner_id=\(userID)"
+    public func clear(withUserID: String?, oncompletion: (ErrorProtocol?) -> Void) {
         
-//        do {
-//            let connection = try Connection(URI(connectionString))
-//            
-//            let result = try connection.execute(query)
-//            
-//            
-//        } catch {
-//            
-//        }
+        let userID = withUserID ?? defaultUsername
+        let query = "DELETE FROM todos WHERE user_id='\(userID)'"
         
-    }
-    
-    public func clear(withUserID ownerID: String?, oncompletion: (ErrorProtocol?) -> Void) {
-        
-//        let query = "DELETE FROM todos WHERE owner=\(ownerID)"
-        
-//        do {
-//            let connection = try Connection(URI(connectionString))
-//            
-//            let result = try connection.execute(query)
-//            
-//            
-//        } catch {
-//            
-//        }
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.CommandOK else {
+                oncompletion(TodoCollectionError.ParseError)
+                return
+            }
+            oncompletion(nil)
+            
+        } catch {
+            oncompletion(error)
+        }
     }
     
     public func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
         
-//        let query = "TRUNCATE TABLE todos"
+        let query = "TRUNCATE TABLE todos"
         
-//        do {
-//            let connection = try Connection(URI(connectionString))
-//            
-//            let result = try connection.execute(query)
-//            
-//            
-//        } catch {
-//            
-//        }
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.CommandOK else {
+                oncompletion(TodoCollectionError.ParseError)
+                return
+            }
+            oncompletion(nil)
+        
+        } catch {
+            oncompletion(error)
+        }
     }
     
-    public func get(withUserID userID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
+    public func get(withUserID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
         
 //        let query = "SELECT * FROM todos WHERE owner_id=\(userID)"
         
@@ -148,7 +195,7 @@ public final class TodoList : TodoListAPI {
         
     }
     
-    public func get(withUserID userID: String?, withDocumentID documentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+    public func get(withUserID: String?, withDocumentID documentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         
 //        let query = "SELECT * FROM todos WHERE ownerid=\(userID) AND tid=\(documentID)"
         
