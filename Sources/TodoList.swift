@@ -81,7 +81,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public init(_ dbConfiguration: DatabaseConfiguration) {
+    public init(dbConfiguration: DatabaseConfiguration) {
 
         do {
             self.host = dbConfiguration.host!
