@@ -55,8 +55,6 @@ public final class TodoList: TodoListAPI {
     var database: String = TodoList.defaultDatabaseName
     var defaultUsername = "default"
 
-    //let connectionString = "postgres://localhost:5432/todolist"
-
     public init(database: String = TodoList.defaultDatabaseName,
                 host: String = TodoList.defaultPostgreHost,
                 port: Int32 = TodoList.defaultPostgrePort,
@@ -133,7 +131,6 @@ public final class TodoList: TodoListAPI {
         } catch {
             oncompletion(nil, error)
         }
-
     }
 
     public func clear(withUserID: String?, oncompletion: (ErrorProtocol?) -> Void) {
@@ -222,7 +219,6 @@ public final class TodoList: TodoListAPI {
         } catch {
             oncompletion(nil, error)
         }
-
     }
 
     public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
@@ -256,7 +252,6 @@ public final class TodoList: TodoListAPI {
         } catch {
             oncompletion(nil, error)
         }
-
     }
 
     // TODO: uuid for document ID
@@ -287,7 +282,6 @@ public final class TodoList: TodoListAPI {
         } catch {
             oncompletion(nil, error)
         }
-
     }
 
     public func update(documentID: String, userID: String?, title: String?, order: Int?,
@@ -344,7 +338,6 @@ public final class TodoList: TodoListAPI {
         } catch {
             oncompletion(nil, error)
         }
-
     }
 
     public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
@@ -370,7 +363,5 @@ public final class TodoList: TodoListAPI {
         } catch {
             oncompletion(error)
         }
-
     }
-
 }
