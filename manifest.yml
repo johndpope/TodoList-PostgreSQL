@@ -1,11 +1,12 @@
 declared-services:
-  TodoList-Cloudant:
-    label: cloudantNoSQLDB
-    plan: shared
+  todolist-postgresql2:
+    name: todolist-postgresql2
+    label: user-provided
 applications:
-- name: Kitura-TodoList
+- name: todolist-postgresql
   memory: 256M
   instances: 2
   random-route: true
   services:
-  - TodoList-Cloudant
+  - todolist-postgresql2
+  buildpack: https://github.com/IBM-Swift/swift-buildpack.git#develop
