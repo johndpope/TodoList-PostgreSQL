@@ -32,6 +32,11 @@ import PostgreSQL
  );
  
 */
+let COUNT = "count"
+let TID = "tid"
+let TITLE = "title"
+let COMPLETED = "completed"
+let ORDER = "ordering"
 
 public final class TodoList : TodoListAPI {
     
@@ -118,7 +123,7 @@ public final class TodoList : TodoListAPI {
                 return
             }
             
-            guard let count = try Int(String(result[0].data("count"))) else {
+            guard let count = try Int(String(result[0].data(COUNT))) else {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
@@ -195,22 +200,38 @@ public final class TodoList : TodoListAPI {
         
     }
     
-    public func get(withUserID: String?, withDocumentID documentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+    public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         
-//        let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(documentID)'"
-//        
-//        do {
-//            print("(\(#function) at \(#line)) - Server status")
-//            print(self.postgreConnection.internalStatus)
-//            
-//            let result = try self.postgreConnection.execute(query)
-//            
-//            print("(\(#function) at \(#line)) - Execution of the query status: ")
-//            print(result.status)
-//            
-//        } catch {
-//            oncompletion(nil, error)
-//        }
+        let userID = withUserID ?? defaultUsername
+        let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)'"
+        
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.TuplesOK else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+
+            
+            let title = try String(result[0].data(TITLE))
+            let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
+            guard let order = try Int(String(result[0].data(ORDER))) else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            let todoItem = TodoItem(documentID: withDocumentID, userID: userID, order: order, title: title, completed: completed)
+            oncompletion(todoItem, nil)
+            
+        } catch {
+            oncompletion(nil, error)
+        }
         
     }
     
@@ -235,7 +256,7 @@ public final class TodoList : TodoListAPI {
                 return
             }
             
-            let docID = try (String(result[0].data("tid")))
+            let docID = try (String(result[0].data(TID)))
             let todoItem = TodoItem(documentID: docID, userID: userID, order: order, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
