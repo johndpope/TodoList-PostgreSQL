@@ -25,8 +25,8 @@ import PostgreSQL
  CREATE TABLE todos
  (
 	tid 		bigserial 		PRIMARY KEY,
+ 	user_id 	varchar(128)	NOT NULL,
 	title		varchar(256)	NOT NULL,
-	user_id 	varchar(128)	NOT NULL,
 	completed	integer			NOT NULL,
 	ordering	integer			NOT NULL
  );
@@ -197,34 +197,51 @@ public final class TodoList : TodoListAPI {
     
     public func get(withUserID: String?, withDocumentID documentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         
-//        let query = "SELECT * FROM todos WHERE ownerid=\(userID) AND tid=\(documentID)"
-        
+//        let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(documentID)'"
+//        
 //        do {
-//            let connection = try Connection(URI(connectionString))
+//            print("(\(#function) at \(#line)) - Server status")
+//            print(self.postgreConnection.internalStatus)
 //            
-//            let result = try connection.execute(query)
+//            let result = try self.postgreConnection.execute(query)
 //            
+//            print("(\(#function) at \(#line)) - Execution of the query status: ")
+//            print(result.status)
 //            
 //        } catch {
-//            
+//            oncompletion(nil, error)
 //        }
         
     }
     
+    // TODO: uuid for document ID
     public func add(userID: String?, title: String, order: Int, completed: Bool,
              oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         
-//        let query = "INSERT INTO todos (title, owner_id, completed, orderno) VALUES (\(title), \(userID), \(completed), \(order));"
+        let userID = userID ?? defaultUsername
+        let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
         
-//        do {
-//            let connection = try Connection(URI(connectionString))
-//            
-//            let result = try connection.execute(query)
-//            
-//            
-//        } catch {
-//            
-//        }
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.TuplesOK else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            
+            let docID = try (String(result[0].data("tid")))
+            let todoItem = TodoItem(documentID: docID, userID: userID, order: order, title: title, completed: completed)
+            oncompletion(todoItem, nil)
+
+        } catch {
+            oncompletion(nil, error)
+        }
         
     }
     
@@ -245,7 +262,7 @@ public final class TodoList : TodoListAPI {
         
     }
     
-    public func delete(withUserID userID: String?, withDocumentID documentID: String, oncompletion: (ErrorProtocol?) -> Void) {
+    public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
     
 //        let query = "DELETE FROM todos WHERE owner_id=\(userID) AND tid=\(documentID)"
         
