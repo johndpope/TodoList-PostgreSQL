@@ -186,17 +186,41 @@ public final class TodoList : TodoListAPI {
     
     public func get(withUserID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
         
-//        let query = "SELECT * FROM todos WHERE owner_id=\(userID)"
-        
-//        do {
-//            let connection = try Connection(URI(connectionString))
-//            
-//            let result = try connection.execute(query)
-//            
-//            
-//        } catch {
-//            
-//        }
+        let userID = withUserID ?? defaultUsername
+        let query = "SELECT * FROM todos WHERE user_id='\(userID)'"
+
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+            
+            guard result.status == PostgreSQL.Result.Status.TuplesOK else {
+                oncompletion(nil, TodoCollectionError.ParseError)
+                return
+            }
+            var todoItems = [TodoItem]()
+            
+            for i in 0 ..< result.count {
+                let tid = try String(result[i].data(TID))
+                let title = try String(result[i].data(TITLE))
+                let completed = try String(result[i].data(COMPLETED)) == "t" ? true : false
+                guard let order = try Int(String(result[i].data(ORDER))) else {
+                    oncompletion(nil, TodoCollectionError.ParseError)
+                    return
+                }
+                
+                todoItems.append(TodoItem(documentID: tid, userID: userID, order: order, title: title, completed: completed))
+            }
+            
+            oncompletion(todoItems, nil)
+            
+        } catch {
+            oncompletion(nil, error)
+        }
         
     }
     
@@ -268,16 +292,21 @@ public final class TodoList : TodoListAPI {
     public func update(documentID: String, userID: String?, title: String?, order: Int?,
                 completed: Bool?, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         
-//        let query = "UPDATE todos SET completed=\(completed) WHERE tid=\(documentID)"
-        
+//        let userID = userID ?? defaultUsername
+//        let query = "UPDATE todos SET title = '\(title)' OR order = \(order) OR completed=\(completed) WHERE tid=\(documentID) AND user_id='\(userID)'"
+//        
 //        do {
-//            let connection = try Connection(URI(connectionString))
+//            print("(\(#function) at \(#line)) - Server status")
+//            print(self.postgreConnection.internalStatus)
 //            
-//            let result = try connection.execute(query)
+//            let result = try self.postgreConnection.execute(query)
+//            
+//            print("(\(#function) at \(#line)) - Execution of the query status: ")
+//            print(result.status)
 //            
 //            
 //        } catch {
-//            
+//            oncompletion(nil, error)
 //        }
         
     }
