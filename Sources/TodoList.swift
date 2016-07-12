@@ -218,7 +218,6 @@ public final class TodoList : TodoListAPI {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
-
             
             let title = try String(result[0].data(TITLE))
             let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
@@ -285,17 +284,27 @@ public final class TodoList : TodoListAPI {
     
     public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
     
-//        let query = "DELETE FROM todos WHERE owner_id=\(userID) AND tid=\(documentID)"
+        let userID = withUserID ?? defaultUsername
+        let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID)"
         
-//        do {
-//            let connection = try Connection(URI(connectionString))
-//            
-//            let result = try connection.execute(query)
-//            
-//            
-//        } catch {
-//            
-//        }
+        do {
+            print("(\(#function) at \(#line)) - Server status")
+            print(self.postgreConnection.internalStatus)
+            
+            let result = try self.postgreConnection.execute(query)
+            
+            print("(\(#function) at \(#line)) - Execution of the query status: ")
+            print(result.status)
+
+            guard result.status == PostgreSQL.Result.Status.CommandOK else {
+                oncompletion(TodoCollectionError.ParseError)
+                return
+            }
+            oncompletion(nil)
+            
+        } catch {
+            oncompletion(error)
+        }
         
     }
     
