@@ -21,8 +21,8 @@ before_install:
   - git submodule init && git submodule update
   - git clone https://github.com/IBM-Swift/todolist-tests
   - mv todolist-tests Tests
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo service postgresql start
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start postgresql
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo service postgresql start ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start postgresql ; fi
   
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then swift build -Xcc -fblocks -Xcc -I/usr/local/include/postgresql -Xlinker -rpath -Xlinker .build/debug ; fi
