@@ -18,6 +18,8 @@ import Foundation
 import TodoListAPI
 import SQL
 import PostgreSQL
+import HeliumLogger
+import LoggerAPI
 
 
 /**
@@ -39,8 +41,9 @@ let TITLE = "title"
 let COMPLETED = "completed"
 let ORDER = "ordering"
 
-public final class TodoList: TodoListAPI {
 
+public final class TodoList: TodoListAPI {
+    
     static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
     static let defaultDatabaseName = "todolist"
