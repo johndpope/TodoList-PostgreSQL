@@ -13,8 +13,8 @@ addons:
   - postgresql: "9.5"
 
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then psql -c 'create database todolist;' -U postgres
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U postgres
+  - psql -c 'create database todolist;' -U postgres
+  - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U postgres
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update   ; fi
