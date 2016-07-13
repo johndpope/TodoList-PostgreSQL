@@ -26,8 +26,6 @@ import TodoListAPI
 
 Log.logger = HeliumLogger()
 
-
-
 extension DatabaseConfiguration {
 
     init(withService: Service) {
