@@ -11,7 +11,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install postgresql  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a/swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a-osx.pkg    ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget https://swift.org/builds/development/ubuntu1404/swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a/swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a-ubuntu14.04.tar.gz    ; fi
-  - if [[ "$TRAVIS_OS-NAME" == "linux" ]]; then apt-get install libpq-dev ; fi
+  - if [[ "$TRAVIS_OS-NAME" == "linux" ]]; then apt-get install postgresql libpq-dev ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -pkg swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a-osx.pkg -target /    ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar xzvf swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a-ubuntu14.04.tar.gz    ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:"${PATH}"    ; fi
@@ -21,8 +21,9 @@ before_install:
   - git submodule init && git submodule update
   - git clone https://github.com/IBM-Swift/todolist-tests
   - mv todolist-tests Tests
-  - psql -h localhost
-
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then service postgresql start
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start postgresql
+  
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then swift build -Xcc -fblocks -Xcc -I/usr/local/include/postgresql -Xlinker -rpath -Xlinker .build/debug ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then swift build -Xcc -I/usr/local/include; fi
