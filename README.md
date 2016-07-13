@@ -1,22 +1,22 @@
 # TodoList PostgreSQL
 
 
-Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for TodoList. Uses the [Kitura-Redis](https://github.com/IBM-Swift/todolist-api) library for interfacing with PostgreSQL.
+Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for TodoList.
 
 Quick start:
 1. Download the [Swift DEVELOPMENT 06-06 snapshot](https://swift.org/download/#snapshots)
 
-2. Download redis
+2. Download PostgreSQL
   You can use `brew install postgresql`
 
-3. Clone the TodoList Redis repository
+3. Clone the TodoList PostgreSQL repository
   `git clone https://github.com/IBM-Swift/todolist-postgresql`
 
 4. Fetch the test cases by running:
   `git clone https://github.com/IBM-Swift/todolist-tests Tests`
 
-5. Compile the library with `swift build` or create an XCode project with `swift package generate-xcodeproj`
-6. 
+5. Compile the library with `swift build -Xcc -I/usr/local/include` or create an XCode project with `swift package generate-xcodeproj`
+
 6. Run the test cases with `swift test` or directly from XCode
 
 ##Deploying to Bluemix:
@@ -29,7 +29,27 @@ Quick start:
 
 4.Upon creation, you should see your unbound service on the dashboard page
 
-5.Dowload and install the Cloud Foundry tools:
+5.SSH to the server and enter your password credentials (i.e)
+
+```
+psql "sslmode=require host=INSERT_HOST_NAME port=INSERT_PORT_NUM dbname=compose user=admin"
+```
+
+6.Once in the server, create a database called "todolist"
+
+```
+create database todolist;
+```
+
+7.Then create the table called "todos"
+
+```
+create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);
+```
+
+8.To confirm if you have the table created, you can ```\d todos```
+
+9.Dowload and install the Cloud Foundry tools:
 
 ```
 cf login
@@ -41,9 +61,9 @@ bluemix login -u username -o org_name -s space_name
 Be sure to change the directory to the todolist-postgresql directory where the manifest.yml file is located.
 ```
 
-6.Run ```cf push```
+10.Run ```cf push```
 
-7.It should take several minutes, roughly 4-6 minutes. If it works correctly, it should state
+11.It should take several minutes, roughly 4-6 minutes. If it works correctly, it should state
 
 ```
 2 of 2 instances running
