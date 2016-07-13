@@ -75,9 +75,13 @@ public final class TodoList: TodoListAPI {
             // Check the status
             print("(\(#function) at \(#line)) - Server status")
             print(postgreConnection.internalStatus)
+            
+            guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
+                throw TodoCollectionError.ConnectionRefused
+            }
 
         } catch {
-            print("Failed to connect in local")
+            print("(\(#function) at \(#line)) - Failed to connect to the server")
         }
     }
 
@@ -96,9 +100,13 @@ public final class TodoList: TodoListAPI {
 
             // Check the server status
             print(postgreConnection.internalStatus)
+            
+            guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
+                throw TodoCollectionError.ConnectionRefused
+            }
 
         } catch {
-            print("Failed to connect in configuration")
+            print("(\(#function) at \(#line)) - Failed to connect to the server")
         }
     }
 
