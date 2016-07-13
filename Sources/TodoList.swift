@@ -28,7 +28,7 @@ import PostgreSQL
 	tid 		bigserial 		PRIMARY KEY,
  	user_id 	varchar(128)	NOT NULL,
 	title		varchar(256)	NOT NULL,
-	completed	integer			NOT NULL,
+	completed	boolean			NOT NULL,
 	ordering	integer			NOT NULL
  );
 
@@ -66,7 +66,7 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(port)
             self.username = username!
             self.password = password!
-            let connectionString = try URI("postgres://\(host):\(port)/\(database)")
+            let connectionString = try URI("postgres://\(self.host):\(self.port)/\(self.database)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
 
             // Open the server
@@ -88,7 +88,7 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(dbConfiguration.port!)
             self.username = dbConfiguration.username!
             self.password = dbConfiguration.password!
-            let connectionString = try URI("postgres://\(host):\(port)/\(database)")
+            let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(TodoList.defaultDatabaseName)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
 
             // Open

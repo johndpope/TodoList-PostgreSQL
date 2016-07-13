@@ -32,10 +32,12 @@ extension DatabaseConfiguration {
 
     init(withService: Service) {
         if let credentials = withService.credentials {
-            self.host = credentials["host"].stringValue
+            var hostname = credentials["public_hostname"].stringValue.split(byString: ":")
+            self.host = hostname[0]
             self.username = credentials["username"].stringValue
             self.password = credentials["password"].stringValue
-            self.port = UInt16(credentials["port"].stringValue)!
+            self.port = UInt16(hostname[1])!
+            
         } else {
             self.host = "127.0.0.1"
             self.username = nil
@@ -50,8 +52,8 @@ let databaseConfiguration: DatabaseConfiguration
 let todos: TodoList
 
 do {
-    if let service = try CloudFoundryEnv.getAppEnv().getService(spec: "TodoList-Redis"){
-        Log.verbose("Found TodoList-Redis on CloudFoundry")
+    if let service = try CloudFoundryEnv.getAppEnv().getService(spec: "todolist-postgresql2"){
+        Log.verbose("Found TodoList-PostgreSQL on CloudFoundry")
         databaseConfiguration = DatabaseConfiguration(withService: service)
         Log.verbose("databaseConfiguration: \(databaseConfiguration.host), \(databaseConfiguration.port)")
         todos = TodoList(dbConfiguration: databaseConfiguration)

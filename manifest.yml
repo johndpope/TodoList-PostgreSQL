@@ -9,4 +9,4 @@ applications:
   random-route: true
   services:
   - todolist-postgresql2
-  buildpack: https://github.com/IBM-Swift/swift-buildpack.git#develop
+  buildpack: https://github.com/chiahuang/swift-buildpack.git#develop
