@@ -71,15 +71,11 @@ public final class TodoList: TodoListAPI {
             self.password = password!
             let connectionString = try URI("postgres://\(self.host):\(self.port)/\(self.database)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
-            print(connectionString)
             
             // Open the server
             try postgreConnection.open()
 
             // Check the status
-            print("(\(#function) at \(#line)) - Server status")
-            print(postgreConnection.internalStatus)
-            
             guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
                 throw TodoCollectionError.ConnectionRefused
             }
@@ -103,7 +99,6 @@ public final class TodoList: TodoListAPI {
             try postgreConnection.open()
 
             // Check the server status
-            print(postgreConnection.internalStatus)
             
             guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
                 throw TodoCollectionError.ConnectionRefused
@@ -121,13 +116,7 @@ public final class TodoList: TodoListAPI {
         let query = "SELECT COUNT(*) FROM todos WHERE user_id='\(userID)'"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
@@ -151,13 +140,7 @@ public final class TodoList: TodoListAPI {
         let query = "DELETE FROM todos WHERE user_id='\(userID)'"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.CommandOK else {
                 oncompletion(TodoCollectionError.ParseError)
@@ -175,13 +158,7 @@ public final class TodoList: TodoListAPI {
         let query = "TRUNCATE TABLE todos"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.CommandOK else {
                 oncompletion(TodoCollectionError.ParseError)
@@ -200,13 +177,7 @@ public final class TodoList: TodoListAPI {
         let query = "SELECT * FROM todos WHERE user_id='\(userID)'"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
@@ -239,13 +210,7 @@ public final class TodoList: TodoListAPI {
         let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)'"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
@@ -266,7 +231,6 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    // TODO: uuid for document ID
     public func add(userID: String?, title: String, order: Int, completed: Bool,
              oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
 
@@ -274,13 +238,7 @@ public final class TodoList: TodoListAPI {
         let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
@@ -324,13 +282,7 @@ public final class TodoList: TodoListAPI {
         query.append(condition)
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
@@ -358,13 +310,7 @@ public final class TodoList: TodoListAPI {
         let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID)"
 
         do {
-            print("(\(#function) at \(#line)) - Server status")
-            print(self.postgreConnection.internalStatus)
-
             let result = try self.postgreConnection.execute(query)
-
-            print("(\(#function) at \(#line)) - Execution of the query status: ")
-            print(result.status)
 
             guard result.status == PostgreSQL.Result.Status.CommandOK else {
                 oncompletion(TodoCollectionError.ParseError)
