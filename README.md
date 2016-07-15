@@ -3,7 +3,8 @@
 
 Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for TodoList.
 
-Quick start:
+## Quick start:
+
 1. Download the [Swift DEVELOPMENT 06-06 snapshot](https://swift.org/download/#snapshots)
 
 2. Download PostgreSQL
@@ -19,37 +20,37 @@ Quick start:
 
 6. Run the test cases with `swift test` or directly from XCode
 
-##Deploying to Bluemix:
+## Deploying to Bluemix:
 
-1.Get an account for Bluemix
+1. Get an account for Bluemix
 
-2.Select the PostgreSQL by Compose Service
+2. Select the PostgreSQL by Compose Service
 
-3.Set the Service name as todolist-postgresql2 then initialize the Host, Port, Username, and Password to the values instantiated
+3. Set the Service name as todolist-postgresql2 then initialize the Host, Port, Username, and Password to the values instantiated
 
-4.Upon creation, you should see your unbound service on the dashboard page
+4. Upon creation, you should see your unbound service on the dashboard page
 
-5.SSH to the server and enter your password credentials (i.e)
+5. SSH to the server and enter your password credentials (i.e)
 
 ```
 psql "sslmode=require host=INSERT_HOST_NAME port=INSERT_PORT_NUM dbname=compose user=admin"
 ```
 
-6.Once in the server, create a database called "todolist"
+6. Once in the server, create a database called "todolist"
 
 ```
 create database todolist;
 ```
 
-7.Then create the table called "todos"
+7. Then create the table called "todos"
 
 ```
 create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);
 ```
 
-8.To confirm if you have the table created, you can ```\d todos```
+8. To confirm if you have the table created, you can ```\d todos```
 
-9.Dowload and install the Cloud Foundry tools:
+9. Dowload and install the Cloud Foundry tools:
 
 ```
 cf login
@@ -61,9 +62,9 @@ bluemix login -u username -o org_name -s space_name
 Be sure to change the directory to the todolist-postgresql directory where the manifest.yml file is located.
 ```
 
-10.Run ```cf push```
+10. Run ```cf push```
 
-11.It should take several minutes, roughly 4-6 minutes. If it works correctly, it should state
+11. It should take several minutes, roughly 4-6 minutes. If it works correctly, it should state
 
 ```
 2 of 2 instances running
