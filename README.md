@@ -32,19 +32,19 @@ Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for Todo
 
 5. SSH to the server and enter your password credentials (i.e)
 
-```
+```sql
 psql "sslmode=require host=INSERT_HOST_NAME port=INSERT_PORT_NUM dbname=compose user=admin"
 ```
 
 6. Once in the server, create a database called "todolist"
 
-```
+```sql
 create database todolist;
 ```
 
 7. Then create the table called "todos"
 
-```
+```sql
 create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);
 ```
 
