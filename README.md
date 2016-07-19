@@ -1,6 +1,6 @@
 # TodoList PostgreSQL
 
-[![Build Status](https://travis-ci.com/IBM-Swift/todolist-postgresql.svg?branch=master&token=NtWCrCZmgqfHWpaxg7qx)](https://travis-ci.com/IBM-Swift/todolist-postgresql)
+[![Build Status](https://travis-ci.com/IBM-Swift/todolist-postgresql.svg?branch=0.2&token=NtWCrCZmgqfHWpaxg7qx)](https://travis-ci.com/IBM-Swift/todolist-postgresql)
 
 Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for TodoList.
 
