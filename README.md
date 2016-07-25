@@ -17,7 +17,7 @@ Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for Todo
 4. Fetch the test cases by running:
   `git clone https://github.com/IBM-Swift/todolist-tests Tests`
 
-5. Compile the library with `swift build -Xcc -I/usr/local/include` or create an XCode project with `swift package generate-xcodeproj`
+5. Compile the library with `swift build -Xcc -I/usr/local/include -Xlinker -L/usr/local/lib` or create an XCode project with `swift package generate-xcodeproj`
 
 6. Run the test cases with `swift test` or directly from XCode
 
