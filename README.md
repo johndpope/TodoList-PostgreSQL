@@ -8,7 +8,7 @@ Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for Todo
 
 ## Quick start:
 
-1. Download the [Swift DEVELOPMENT 06-06 snapshot](https://swift.org/download/#snapshots)
+1. Download the [Swift DEVELOPMENT 06-20 snapshot](https://swift.org/download/#snapshots)
 
 2. Download PostgreSQL
   You can use `brew install postgresql`
