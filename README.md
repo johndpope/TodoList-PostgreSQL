@@ -1,6 +1,6 @@
 # TodoList PostgreSQL
 
-[![Build Status](https://travis-ci.com/IBM-Swift/todolist-postgresql.svg?branch=master&token=NtWCrCZmgqfHWpaxg7qx)](https://travis-ci.com/IBM-Swift/todolist-postgresql)
+[![Build Status](https://travis-ci.org/IBM-Swift/TodoList-PostgreSQL.svg?branch=master)](https://travis-ci.org/IBM-Swift/TodoList-PostgreSQL)
 
 [![Swift 3 6-06](https://img.shields.io/badge/Swift%203-6/20 SNAPSHOT-blue.svg)](https://swift.org/download/#snapshots)
 
