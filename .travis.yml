@@ -8,7 +8,7 @@ matrix:
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update   ; fi
-  - IF [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall git
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall git ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install postgresql git  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a/swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a-osx.pkg    ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget https://swift.org/builds/development/ubuntu1404/swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a/swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a-ubuntu14.04.tar.gz    ; fi
