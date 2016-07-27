@@ -31,5 +31,6 @@ before_install:
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then swift build -Xcc -fblocks -Xcc -I/usr/include/postgresql -Xlinker -rpath -Xlinker .build/debug ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then swift build -Xcc -I/usr/local/include -Xlinker -L/usr/local/lib/ ; fi
-  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then swift test ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then swift test ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then swift test ; fi
+  - swift test
