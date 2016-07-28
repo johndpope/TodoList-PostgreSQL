@@ -16,7 +16,8 @@ before_install:
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
   
 script:
-  - swift build -Xswiftc -I/usr/local/include/postgresql -Xlinker -L/usr/local/lib -Xcc -fblocks
+  - swift build -Xcc -fblocks -Xcc -I/usr/include/postgresql -Xlinker -rpath -Xlinker .build/debug  
+# - swift build -Xswiftc -I/usr/local/include/postgresql -Xlinker -L/usr/local/lib -Xcc -fblocks
   - swift test
 
 
