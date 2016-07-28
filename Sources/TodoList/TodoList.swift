@@ -74,9 +74,6 @@ public final class TodoList: TodoListAPI {
             let userinfo = URI.UserInfo(username: self.username, password: self.password)
             self.connectionString = URI(scheme: "postgres",userInfo: userinfo , host: self.host, port: Int(self.port), path: self.database)
             
-            
-            //try URI("postgres://\(userinformation)@\(self.host):\(self.port)/\(self.database)")
-
             postgreConnection = try PostgreSQL.Connection(self.connectionString!)
             // Open the server
             try postgreConnection.open()
