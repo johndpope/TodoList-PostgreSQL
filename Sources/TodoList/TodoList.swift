@@ -206,7 +206,7 @@ public final class TodoList: TodoListAPI {
     }
 
     public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-
+        print("get function")
         let userID = withUserID ?? defaultUsername
         let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)'"
 
@@ -235,7 +235,7 @@ public final class TodoList: TodoListAPI {
 
     public func add(userID: String?, title: String, order: Int, completed: Bool,
              oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-
+        print("Add function")
         let userID = userID ?? defaultUsername
         let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
 
