@@ -240,7 +240,7 @@ public final class TodoList: TodoListAPI {
         let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
 
         do {
-            let result = try self.postgreConnection.execute(query)
+            let result = try! self.postgreConnection.execute(query)
             print(result.status)
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
