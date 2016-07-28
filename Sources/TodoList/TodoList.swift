@@ -114,7 +114,7 @@ public final class TodoList: TodoListAPI {
 
         let userID = withUserID ?? defaultUsername
 
-        let query = "SELECT COUNT(*) FROM todos WHERE user_id='\(userID)'"
+        let query = "SELECT COUNT(*) FROM todos WHERE user_id='\(userID)';"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -138,7 +138,7 @@ public final class TodoList: TodoListAPI {
     public func clear(withUserID: String?, oncompletion: (ErrorProtocol?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
-        let query = "DELETE FROM todos WHERE user_id='\(userID)'"
+        let query = "DELETE FROM todos WHERE user_id='\(userID)';"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -156,7 +156,7 @@ public final class TodoList: TodoListAPI {
 
     public func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
 
-        let query = "TRUNCATE TABLE todos"
+        let query = "TRUNCATE TABLE todos;"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -175,7 +175,7 @@ public final class TodoList: TodoListAPI {
     public func get(withUserID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
-        let query = "SELECT * FROM todos WHERE user_id='\(userID)'"
+        let query = "SELECT * FROM todos WHERE user_id='\(userID)';"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -208,7 +208,7 @@ public final class TodoList: TodoListAPI {
     public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
         print("get function")
         let userID = withUserID ?? defaultUsername
-        let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)'"
+        let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)';"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -311,7 +311,7 @@ public final class TodoList: TodoListAPI {
     public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
         
         let userID = withUserID ?? defaultUsername
-        let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID)"
+        let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID);"
 
         do {
             let result = try self.postgreConnection.execute(query)
