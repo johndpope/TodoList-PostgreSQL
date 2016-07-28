@@ -47,7 +47,7 @@ public final class TodoList: TodoListAPI {
     static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
     static let defaultDatabaseName = "todolist"
-    static let defaultPostgreUsername = "postgres"
+    static let defaultPostgreUsername = ""
     static let defaultPostgrePassword = ""
     var postgreConnection: PostgreSQL.Connection!
 
