@@ -47,21 +47,21 @@ public final class TodoList: TodoListAPI {
     static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
     static let defaultDatabaseName = "todolist"
-    static let defaultUsername = ""
-    static let defaultPassword = ""
+    static let defaultPostgreUsername = "postgres"
+    static let defaultPostgrePassword = ""
     var postgreConnection: PostgreSQL.Connection!
 
-    var host: String = TodoList.defaultPostgreHost
-    var port: Int32 = TodoList.defaultPostgrePort
-    var password: String = TodoList.defaultPassword
-    var username: String = TodoList.defaultUsername
+    var host: String //= TodoList.defaultPostgreHost
+    var port: Int32 //= TodoList.defaultPostgrePort
+    var password: String //= TodoList.defaultPassword
+    var username: String //= TodoList.defaultUsername
     var database: String = TodoList.defaultDatabaseName
     var defaultUsername = "default"
 
     public init(database: String = TodoList.defaultDatabaseName,
                 host: String = TodoList.defaultPostgreHost,
                 port: Int32 = TodoList.defaultPostgrePort,
-                username: String? = defaultUsername, password: String? = defaultPassword) {
+                username: String? = TodoList.defaultPostgreUsername, password: String? = TodoList.defaultPostgrePassword) {
 
         do {
             self.database = database
@@ -71,7 +71,7 @@ public final class TodoList: TodoListAPI {
             self.password = password!
             let connectionString = try URI("postgres://\(self.host):\(self.port)/\(self.database)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
-            
+
             // Open the server
             try postgreConnection.open()
 
