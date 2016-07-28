@@ -13,7 +13,9 @@ before_install:
   - git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git && cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh autogen.sh && ./configure --with-swift-toolchain=${PWD}/../swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a-ubuntu14.04/usr --prefix=${PWD}/../swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a-ubuntu14.04/usr && make && make install && cd ..
   - psql -c 'create database todolist;' -U postgres
   - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U postgres
-  - psql -c 'select * from todos;' -U postgres
+  - psql -c 'create user test' -U postgres
+  - psql -c 'grant postgres to test' -U postgres
+  - psql -c 'select * from todos;' -U test
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
 
 script:
