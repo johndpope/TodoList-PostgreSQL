@@ -224,6 +224,7 @@ public final class TodoList: TodoListAPI {
                 return
             }
             let todoItem = TodoItem(documentID: withDocumentID, userID: userID, order: order, title: title, completed: completed)
+            print(todoItem)
             oncompletion(todoItem, nil)
 
         } catch {
@@ -247,6 +248,7 @@ public final class TodoList: TodoListAPI {
 
             let docID = try (String(result[0].data(TID)))
             let todoItem = TodoItem(documentID: docID, userID: userID, order: order, title: title, completed: completed)
+            print(todoItem)
             oncompletion(todoItem, nil)
 
         } catch {
