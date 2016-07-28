@@ -14,7 +14,6 @@ before_install:
   - psql -c 'create database todolist;' -U postgres
   - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U postgres
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
-  - psql -c '\l' -U postgres  
 
 script:
   - swift build -Xcc -fblocks -Xcc -I/usr/include/postgresql -Xlinker -rpath -Xlinker .build/debug  
