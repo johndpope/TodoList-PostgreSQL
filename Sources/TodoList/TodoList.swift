@@ -79,6 +79,7 @@ public final class TodoList: TodoListAPI {
             guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
                 throw TodoCollectionError.ConnectionRefused
             }
+            print(postgreConnection.internalStatus)
 
         } catch {
             print("(\(#function) at \(#line)) - Failed to connect to the server")
