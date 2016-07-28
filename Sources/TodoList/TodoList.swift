@@ -211,6 +211,7 @@ public final class TodoList: TodoListAPI {
         let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)';"
 
         do {
+            Log.info("Executing query")
             let result = try self.postgreConnection.execute(query)
 
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
@@ -240,6 +241,7 @@ public final class TodoList: TodoListAPI {
         let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
 
         do {
+            Log.info("Executing query")
             let result = try self.postgreConnection.execute(query)
             print(result)
             print(result.status)
