@@ -71,7 +71,7 @@ public final class TodoList: TodoListAPI {
             self.password = password!
             let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(self.database)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
-            Log.info(connectionString)
+            print(connectionString)
             // Open the server
             try postgreConnection.open()
 
