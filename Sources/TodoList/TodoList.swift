@@ -47,7 +47,7 @@ public final class TodoList: TodoListAPI {
     static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
     static let defaultDatabaseName = "todolist"
-    static let defaultPostgreUsername = ""
+    static let defaultPostgreUsername = "postgres"
     static let defaultPostgrePassword = ""
     var postgreConnection: PostgreSQL.Connection!
 
@@ -69,9 +69,9 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(port)
             self.username = username!
             self.password = password!
-            let connectionString = try URI("postgres://\(self.host):\(self.port)/\(self.database)")
+            let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(self.database)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
-
+            Log.info(connectionString)
             // Open the server
             try postgreConnection.open()
 
@@ -80,7 +80,7 @@ public final class TodoList: TodoListAPI {
                 throw TodoCollectionError.ConnectionRefused
             }
             print(postgreConnection.internalStatus)
-
+            Log.info("Postgres connection status: \(postgreConnection.internalStatus)")
         } catch {
             print("(\(#function) at \(#line)) - Failed to connect to the server")
         }
