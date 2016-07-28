@@ -217,7 +217,7 @@ public final class TodoList: TodoListAPI {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
-
+            print(result.status)
             let title = try String(result[0].data(TITLE))
             let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
             guard let order = try Int(String(result[0].data(ORDER))) else {
@@ -241,7 +241,7 @@ public final class TodoList: TodoListAPI {
 
         do {
             let result = try self.postgreConnection.execute(query)
-
+            print(result.status)
             guard result.status == PostgreSQL.Result.Status.TuplesOK else {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
