@@ -14,7 +14,7 @@ before_install:
   - psql -c 'create user test;' -U postgres
   - psql -c 'grant postgres to test;' -U postgres
   - psql -c 'create database test;' -U postgres 
-  - psql -c 'create database todolist; -U test
+  - psql -c 'create database todolist;' -U test
   - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U test
   - psql -c 'select * from todos;' -U test
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
