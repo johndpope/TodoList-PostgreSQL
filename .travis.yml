@@ -14,12 +14,14 @@ before_install:
   - psql --help
   - psql -c 'alter user travis createdb' -U postgres
   - createdb travis
+  - psql -c 'create user todolist' -U postgres
   - createdb todolist
   - psql -c 'grant postgres to travis' -U postgres
+  - psql -c 'grant postgres to todolist' -U postgres
   #- psql -c 'create database travis' -U travis 
   #- psql -c 'create database todolist;' -U travis
-  - psql -c '\c todolist' -U travis
-  - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U travis
+  - psql -c '\c todolist' -U todolist
+  - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U todolist
   - psql -c 'grant all privileges on todos to public' -U travis
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
 
