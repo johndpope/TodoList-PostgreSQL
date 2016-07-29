@@ -22,7 +22,7 @@ before_install:
   #- psql -c 'create database todolist;' -U travis
   - psql -c '\c todolist' -U todolist
   - psql -c 'create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);' -U todolist
-  - psql -c 'grant all privileges on todos to public' -U travis
+  - psql -c 'grant all privileges on todos to public' -U todolist
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
 
 script:
