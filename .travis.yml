@@ -17,7 +17,7 @@ before_install:
   - psql --help
   - psql -c 'alter user travis createdb' -U postgres
   - psql -c 'grant postgres to travis' -U postgres
-
+  - psql -c 'GRANT ALL PRIVILEGES ON todos to public' -U postgres
   - git clone https://github.com/IBM-Swift/todolist-tests Tests
 
 script:
