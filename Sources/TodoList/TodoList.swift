@@ -51,12 +51,10 @@ public final class TodoList: TodoListAPI {
     static let defaultPostgrePassword = ""
     var postgreConnection: PostgreSQL.Connection!
 
-    // TODO: Delete this connectionString
-    var connectionString: URI?
-    var host: String //= TodoList.defaultPostgreHost
-    var port: Int32 //= TodoList.defaultPostgrePort
-    var password: String //= TodoList.defaultPassword
-    var username: String //= TodoList.defaultUsername
+    var host: String
+    var port: Int32
+    var password: String
+    var username: String
     var database: String = TodoList.defaultDatabaseName
     var defaultUsername = "default"
 
@@ -72,9 +70,9 @@ public final class TodoList: TodoListAPI {
             self.username = username!
             self.password = password!
             let userinfo = URI.UserInfo(username: self.username, password: self.password)
-            self.connectionString = URI(scheme: "postgres",userInfo: userinfo , host: self.host, port: Int(self.port), path: self.database)
-            
-            postgreConnection = try PostgreSQL.Connection(self.connectionString!)
+            let connectionString = URI(scheme: "postgres",userInfo: userinfo , host: self.host, port: Int(self.port), path: self.database)
+            postgreConnection = try PostgreSQL.Connection(connectionString)
+
             // Open the server
             try postgreConnection.open()
 
@@ -82,8 +80,6 @@ public final class TodoList: TodoListAPI {
             guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
                 throw TodoCollectionError.ConnectionRefused
             }
-            print("(\(#function) at \(#line)) - \(self.connectionString)")
-            print("(\(#function) at \(#line)) - \(postgreConnection.internalStatus)")
         } catch {
             print("(\(#function) at \(#line)) - Failed to connect to the server")
         }
@@ -96,14 +92,13 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(dbConfiguration.port!)
             self.username = dbConfiguration.username!
             self.password = dbConfiguration.password!
-            self.connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(TodoList.defaultDatabaseName)")
-            postgreConnection = try PostgreSQL.Connection(self.connectionString!)
+            let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(TodoList.defaultDatabaseName)")
+            postgreConnection = try PostgreSQL.Connection(connectionString)
 
             // Open
             try postgreConnection.open()
 
             // Check the server status
-            
             guard postgreConnection.internalStatus == PostgreSQL.Connection.InternalStatus.OK else {
                 throw TodoCollectionError.ConnectionRefused
             }
@@ -209,8 +204,7 @@ public final class TodoList: TodoListAPI {
     }
 
     public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-        print("(\(#function) at \(#line)) - \(postgreConnection.internalStatus)")
-        print("(\(#function) at \(#line)) - \(self.connectionString)")
+
         let userID = withUserID ?? defaultUsername
         let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)';"
 
@@ -237,8 +231,7 @@ public final class TodoList: TodoListAPI {
 
     public func add(userID: String?, title: String, order: Int, completed: Bool,
              oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
-        print("(\(#function) at \(#line)) - \(postgreConnection.internalStatus)")
-        print("(\(#function) at \(#line)) - \(self.connectionString)")
+
         let userID = userID ?? defaultUsername
         let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
 
