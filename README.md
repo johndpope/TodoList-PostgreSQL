@@ -19,55 +19,96 @@ Implements the [TodoListAPI](https://github.com/IBM-Swift/todolist-api) for Todo
 
 5. Compile the library with `swift build -Xcc -I/usr/local/include -Xlinker -L/usr/local/lib` or create an XCode project with `swift package generate-xcodeproj`
 
+6. Open the project
+
+7. Change ```static let defaultPostgreHost = "/var/run/postgresql"``` to ```static let defaultPostgreHost = "localhost"``` & Change ```static let defaultPostgreUsername = "travis"``` to ```static let defaultPostgreUsername = "INSERT_OWN_DEFAULT_USERNAME"```
+    ####Note: To see your own default username, do `psql --help`
+
 6. Run the test cases with `swift test` or directly from XCode
 
-## Deploying to Bluemix:
+##Setting up Swift application in Bluemix
 
-1. Get an account for Bluemix
+1. Get an account for [Bluemix](https://new-console.ng.bluemix.net/?direct=classic) and go to Category called Compute
 
-2. Select the PostgreSQL by Compose Service
+    ![Postgresql](Images/ClickCompute.png)
 
-3. Set the Service name as todolist-postgresql2 then initialize the Host, Port, Username, and Password to the values instantiated
+2. Then click the blue hexagon '+' icon on the top right corner
 
-4. Upon creation, you should see your unbound service on the dashboard page
+    ![Postgresql](Images/BlueHexagon+.png)
 
-5. SSH to the server and enter your password credentials (i.e)
+3. Look under the category of "Runtime" and click "Swift application"
 
-```sql
-psql "sslmode=require host=INSERT_HOST_NAME port=INSERT_PORT_NUM dbname=compose user=admin"
-```
+    ![Postgresql](Images/LookForSwiftApp.png)
 
-6. Once in the server, create a database called "todolist"
+4. Enter the app name as: todolist-postgresql and then create the application
 
-```sql
-create database todolist;
-```
+    ![Postgresql](Images/CreateSwiftApp.png)
 
-7. Then create the table called "todos"
+##Setting up Postgresql service in Bluemix
 
-```sql
-create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);
-```
+1. Go to Bluemix homepage and click on the Category called Compute
 
-8. To confirm if you have the table created, you can ```\d todos```
+    ![Postgresql](Images/ClickCompute.png)
 
-9. Dowload and install the Cloud Foundry tools:
+2. Then click the blue hexagon '+' icon on the top right corner
 
-```
-cf login
-bluemix api https://api.ng.bluemix.net
-bluemix login -u username -o org_name -s space_name
-```
+    ![Postgresql](Images/BlueHexagon+.png)
 
-```
-Be sure to change the directory to the todolist-postgresql directory where the manifest.yml file is located.
-```
+3. Click "View all" on the top left corner, so it will show all categories
 
-10. Run ```cf push```
+    ![Postgresql](Images/ClickViewAll.png)
 
-11. It should take several minutes, roughly 4-6 minutes. If it works correctly, it should state
+4. Search for Postgresql by Compose
 
-```
-2 of 2 instances running
-App started
-```
+    ![Postgresql](Images/SearchForPostgresql.png)
+
+5. Bound your Swift application to your Postgresql Service, create an account for [Compose] (https://www.compose.com/postgresql), and access your credentials from Compose and input it to Postgresql service.
+
+    ![Postgresql](Images/CreatePostgresqlService.png)
+
+6. Upon creation, you should see your unbound service on the dashboard page
+
+    ![Postgresql](Images/Todolist-postgresql.png)
+
+7. SSH to the server and enter your password credentials (i.e)
+
+  ```sql
+  psql "sslmode=require host=INSERT_HOST_NAME port=INSERT_PORT_NUM dbname=compose user=admin"
+  ```
+
+8. Once in the server, create a database called "todolist"
+
+  ```sql
+  create database todolist;
+  ```
+
+9. Then create the table called "todos"
+
+  ```sql
+  create table todos(tid BIGSERIAL PRIMARY KEY, user_id varchar(128) NOT NULL, title varchar(256) NOT NULL, completed boolean NOT NULL, ordering INTEGER NOT NULL);
+  ```
+
+10. To confirm if you have the table created, you can ```\d todos```
+
+##Deploying to Bluemix:
+
+1. Dowload and install the Cloud Foundry tools:
+
+  ```
+  cf login
+  bluemix api https://api.ng.bluemix.net
+  bluemix login -u username -o org_name -s space_name
+  ```
+
+  ```
+  Be sure to change the directory to the todolist-postgresql directory where the manifest.yml file is located.
+  ```
+
+2. Run ```cf push```
+
+3. It should take several minutes, roughly 4-6 minutes. If it works correctly, it should state
+
+  ```
+  2 of 2 instances running
+  App started
+  ```

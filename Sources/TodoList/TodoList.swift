@@ -92,7 +92,7 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(dbConfiguration.port!)
             self.username = dbConfiguration.username!
             self.password = dbConfiguration.password!
-            let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(TodoList.defaultDatabaseName)")
+            let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")
             postgreConnection = try PostgreSQL.Connection(connectionString)
 
             // Open
