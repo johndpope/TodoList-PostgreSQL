@@ -191,7 +191,7 @@ public final class TodoList: TodoListAPI {
                     return
                 }
 
-                todoItems.append(TodoItem(documentID: tid, userID: userID, order: order, title: title, completed: completed))
+                todoItems.append(TodoItem(documentID: tid, userID: userID, rank: order, title: title, completed: completed))
             }
 
             oncompletion(todoItems, nil)
@@ -219,7 +219,7 @@ public final class TodoList: TodoListAPI {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
-            let todoItem = TodoItem(documentID: withDocumentID, userID: userID, order: order, title: title, completed: completed)
+            let todoItem = TodoItem(documentID: withDocumentID, userID: userID, rank: order, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
         } catch {
@@ -227,11 +227,11 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func add(userID: String?, title: String, order: Int, completed: Bool,
+    public func add(userID: String?, title: String, rank: Int, completed: Bool,
              oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = userID ?? defaultUsername
-        let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
+        let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(rank)) RETURNING tid;"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -241,7 +241,7 @@ public final class TodoList: TodoListAPI {
             }
 
             let docID = try (String(result[0].data(TID)))
-            let todoItem = TodoItem(documentID: docID, userID: userID, order: order, title: title, completed: completed)
+            let todoItem = TodoItem(documentID: docID, userID: userID, rank: rank, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
         } catch {
@@ -249,7 +249,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func update(documentID: String, userID: String?, title: String?, order: Int?,
+    public func update(documentID: String, userID: String?, title: String?, rank: Int?,
                 completed: Bool?, oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = userID ?? defaultUsername
@@ -261,8 +261,8 @@ public final class TodoList: TodoListAPI {
             updateValues.append(" title = '\(title)' ")
         }
 
-        if let order = order {
-            updateValues.append(" \(ORDER) = \(order) ")
+        if let rank = rank {
+            updateValues.append(" \(rank) = \(rank) ")
         }
 
         if let completed = completed {
@@ -286,12 +286,12 @@ public final class TodoList: TodoListAPI {
 
             let title = try String(result[0].data(TITLE))
             let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
-            guard let order = try Int(String(result[0].data(ORDER))) else {
+            guard let rank = try Int(String(result[0].data(ORDER))) else {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
 
-            let todoItem = TodoItem(documentID: documentID, userID: userID, order: order, title: title, completed: completed)
+            let todoItem = TodoItem(documentID: documentID, userID: userID, rank: rank, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
         } catch {
