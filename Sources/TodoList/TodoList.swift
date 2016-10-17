@@ -106,7 +106,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func count(withUserID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
+    public func count(withUserID: String?, oncompletion: @escaping(Int?, Error?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
 
@@ -131,7 +131,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func clear(withUserID: String?, oncompletion: (ErrorProtocol?) -> Void) {
+    public func clear(withUserID: String?, oncompletion: @escaping(Error?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
         let query = "DELETE FROM todos WHERE user_id='\(userID)';"
@@ -150,7 +150,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
+    public func clearAll(oncompletion: @escaping(Error?) -> Void) {
 
         let query = "TRUNCATE TABLE todos;"
 
@@ -168,7 +168,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func get(withUserID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
+    public func get(withUserID: String?, oncompletion: @escaping([TodoItem]?, Error?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
         let query = "SELECT * FROM todos WHERE user_id='\(userID)';"
@@ -201,7 +201,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+    public func get(withUserID: String?, withDocumentID: String, oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = withUserID ?? defaultUsername
         let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)';"
@@ -228,7 +228,7 @@ public final class TodoList: TodoListAPI {
     }
 
     public func add(userID: String?, title: String, order: Int, completed: Bool,
-             oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+             oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = userID ?? defaultUsername
         let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
@@ -250,7 +250,7 @@ public final class TodoList: TodoListAPI {
     }
 
     public func update(documentID: String, userID: String?, title: String?, order: Int?,
-                completed: Bool?, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+                completed: Bool?, oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = userID ?? defaultUsername
 
@@ -299,7 +299,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
+    public func delete(withUserID: String?, withDocumentID: String, oncompletion: @escaping(Error?) -> Void) {
         
         let userID = withUserID ?? defaultUsername
         let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID);"
