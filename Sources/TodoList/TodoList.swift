@@ -15,12 +15,10 @@
  **/
 
 import Foundation
-import TodoListAPI
 import SQL
 import PostgreSQL
 import HeliumLogger
 import LoggerAPI
-
 
 /**
  The PostgreSQL database should contain the following schema:
