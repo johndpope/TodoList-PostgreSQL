@@ -19,9 +19,7 @@ import Foundation
 import Kitura
 import HeliumLogger
 import LoggerAPI
-import TodoListWeb
 import CloudFoundryEnv
-import TodoListAPI
 import TodoList
 
 Log.logger = HeliumLogger()
@@ -30,16 +28,16 @@ extension DatabaseConfiguration {
 
     init(withService: Service) {
         if let credentials = withService.credentials {
-            var hostname = credentials["public_hostname"].stringValue.split(byString: ":")
+            var hostname = credentials["public_hostname"].stringValue.split(separator: ":")
             self.host = hostname[0]
             self.username = credentials["username"].stringValue
             self.password = credentials["password"].stringValue
             self.port = UInt16(hostname[1])!
             
         } else {
-            self.host = "127.0.0.1"
-            self.username = nil
-            self.password = nil
+            self.host = "localhost"
+            self.username = "todolist"
+            self.password = ""
             self.port = UInt16(5432)
         }
         self.options = [String : AnyObject]()

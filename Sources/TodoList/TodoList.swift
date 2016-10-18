@@ -15,12 +15,11 @@
  **/
 
 import Foundation
-import TodoListAPI
 import SQL
+import Axis
 import PostgreSQL
 import HeliumLogger
 import LoggerAPI
-
 
 /**
  The PostgreSQL database should contain the following schema:
@@ -44,9 +43,9 @@ let ORDER = "ordering"
 
 public final class TodoList: TodoListAPI {
     
-    static let defaultPostgreHost = "/var/run/postgresql"
+    static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
-    static let defaultDatabaseName = "/todolist"
+    static let defaultDatabaseName = "todolist"
     static let defaultPostgreUsername = "travis"
     static let defaultPostgrePassword = ""
     var postgreConnection: PostgreSQL.Connection!
@@ -69,9 +68,8 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(port)
             self.username = username!
             self.password = password!
-            let userinfo = URI.UserInfo(username: self.username, password: self.password)
-            let connectionString = URI(scheme: "postgres",userInfo: userinfo , host: self.host, port: Int(self.port), path: self.database)
-            postgreConnection = try PostgreSQL.Connection(connectionString)
+            let connectionString = URL(string: "postgres://\(self.username):\(self.password)@\(self.host):\(self.port)/\(TodoList.defaultDatabaseName)")!
+            postgreConnection = try PostgreSQL.Connection(info: .init(connectionString))
 
             // Open the server
             try postgreConnection.open()
@@ -92,8 +90,8 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(dbConfiguration.port!)
             self.username = dbConfiguration.username!
             self.password = dbConfiguration.password!
-            let connectionString = try URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")
-            postgreConnection = try PostgreSQL.Connection(connectionString)
+            let connectionString = URL(string: "postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")!
+            postgreConnection = try PostgreSQL.Connection(info: .init(connectionString))
 
             // Open
             try postgreConnection.open()
@@ -108,7 +106,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func count(withUserID: String?, oncompletion: (Int?, ErrorProtocol?) -> Void) {
+    public func count(withUserID: String?, oncompletion: @escaping(Int?, Error?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
 
@@ -122,7 +120,7 @@ public final class TodoList: TodoListAPI {
                 return
             }
 
-            guard let count = try Int(String(result[0].data(COUNT))) else {
+            guard let count = try Int(String(describing: result[0].data(COUNT))) else {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
@@ -133,7 +131,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func clear(withUserID: String?, oncompletion: (ErrorProtocol?) -> Void) {
+    public func clear(withUserID: String?, oncompletion: @escaping(Error?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
         let query = "DELETE FROM todos WHERE user_id='\(userID)';"
@@ -152,7 +150,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func clearAll(oncompletion: (ErrorProtocol?) -> Void) {
+    public func clearAll(oncompletion: @escaping(Error?) -> Void) {
 
         let query = "TRUNCATE TABLE todos;"
 
@@ -170,7 +168,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func get(withUserID: String?, oncompletion: ([TodoItem]?, ErrorProtocol?) -> Void) {
+    public func get(withUserID: String?, oncompletion: @escaping([TodoItem]?, Error?) -> Void) {
 
         let userID = withUserID ?? defaultUsername
         let query = "SELECT * FROM todos WHERE user_id='\(userID)';"
@@ -185,15 +183,15 @@ public final class TodoList: TodoListAPI {
             var todoItems = [TodoItem]()
 
             for i in 0 ..< result.count {
-                let tid = try String(result[i].data(TID))
-                let title = try String(result[i].data(TITLE))
-                let completed = try String(result[i].data(COMPLETED)) == "t" ? true : false
-                guard let order = try Int(String(result[i].data(ORDER))) else {
+                let tid = try String(describing: result[i].data(TID))
+                let title = try String(describing: result[i].data(TITLE))
+                let completed = try String(describing: result[i].data(COMPLETED)) == "t" ? true : false
+                guard let order = try Int(String(describing: result[i].data(ORDER))) else {
                     oncompletion(nil, TodoCollectionError.ParseError)
                     return
                 }
 
-                todoItems.append(TodoItem(documentID: tid, userID: userID, order: order, title: title, completed: completed))
+                todoItems.append(TodoItem(documentID: tid, userID: userID, rank: order, title: title, completed: completed))
             }
 
             oncompletion(todoItems, nil)
@@ -203,7 +201,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func get(withUserID: String?, withDocumentID: String, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+    public func get(withUserID: String?, withDocumentID: String, oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = withUserID ?? defaultUsername
         let query = "SELECT * FROM todos WHERE user_id='\(userID)' AND tid='\(withDocumentID)';"
@@ -215,13 +213,13 @@ public final class TodoList: TodoListAPI {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
-            let title = try String(result[0].data(TITLE))
-            let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
-            guard let order = try Int(String(result[0].data(ORDER))) else {
+            let title = try String(describing: result[0].data(TITLE))
+            let completed = try String(describing: result[0].data(COMPLETED)) == "t" ? true : false
+            guard let order = try Int(String(describing: result[0].data(ORDER))) else {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
-            let todoItem = TodoItem(documentID: withDocumentID, userID: userID, order: order, title: title, completed: completed)
+            let todoItem = TodoItem(documentID: withDocumentID, userID: userID, rank: order, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
         } catch {
@@ -229,11 +227,11 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func add(userID: String?, title: String, order: Int, completed: Bool,
-             oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+    public func add(userID: String?, title: String, rank: Int, completed: Bool,
+             oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = userID ?? defaultUsername
-        let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(order)) RETURNING tid;"
+        let query = "INSERT INTO todos (user_id, title, completed, ordering) VALUES ('\(userID)', '\(title)', \(completed), \(rank)) RETURNING tid;"
 
         do {
             let result = try self.postgreConnection.execute(query)
@@ -242,8 +240,8 @@ public final class TodoList: TodoListAPI {
                 return
             }
 
-            let docID = try (String(result[0].data(TID)))
-            let todoItem = TodoItem(documentID: docID, userID: userID, order: order, title: title, completed: completed)
+            let docID = try (String(describing: result[0].data(TID)))
+            let todoItem = TodoItem(documentID: docID, userID: userID, rank: rank, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
         } catch {
@@ -251,8 +249,8 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func update(documentID: String, userID: String?, title: String?, order: Int?,
-                completed: Bool?, oncompletion: (TodoItem?, ErrorProtocol?) -> Void ) {
+    public func update(documentID: String, userID: String?, title: String?, rank: Int?,
+                completed: Bool?, oncompletion: @escaping(TodoItem?, Error?) -> Void ) {
 
         let userID = userID ?? defaultUsername
 
@@ -263,8 +261,8 @@ public final class TodoList: TodoListAPI {
             updateValues.append(" title = '\(title)' ")
         }
 
-        if let order = order {
-            updateValues.append(" \(ORDER) = \(order) ")
+        if let rank = rank {
+            updateValues.append(" ordering = \(rank) ")
         }
 
         if let completed = completed {
@@ -286,14 +284,14 @@ public final class TodoList: TodoListAPI {
                 return
             }
 
-            let title = try String(result[0].data(TITLE))
-            let completed = try String(result[0].data(COMPLETED)) == "t" ? true : false
-            guard let order = try Int(String(result[0].data(ORDER))) else {
+            let title = try String(describing: result[0].data(TITLE))
+            let completed = try String(describing: result[0].data(COMPLETED)) == "t" ? true : false
+            guard let rank = try Int(String(describing: result[0].data(ORDER))) else {
                 oncompletion(nil, TodoCollectionError.ParseError)
                 return
             }
 
-            let todoItem = TodoItem(documentID: documentID, userID: userID, order: order, title: title, completed: completed)
+            let todoItem = TodoItem(documentID: documentID, userID: userID, rank: rank, title: title, completed: completed)
             oncompletion(todoItem, nil)
 
         } catch {
@@ -301,7 +299,7 @@ public final class TodoList: TodoListAPI {
         }
     }
 
-    public func delete(withUserID: String?, withDocumentID: String, oncompletion: (ErrorProtocol?) -> Void) {
+    public func delete(withUserID: String?, withDocumentID: String, oncompletion: @escaping(Error?) -> Void) {
         
         let userID = withUserID ?? defaultUsername
         let query = "DELETE FROM todos WHERE user_id='\(userID)' AND tid=\(withDocumentID);"
