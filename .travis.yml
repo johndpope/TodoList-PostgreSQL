@@ -12,7 +12,7 @@ before_install:
   - psql --help
   - psql -c 'alter user travis createdb' -U postgres
   - createdb travis
-  - psql -c 'create user todolist with PASSWORD ''todopassword''' -U postgres
+  - psql -c 'create user todolist with PASSWORD \'todopassword\'' -U postgres
   - createdb todolist
   - psql -c 'grant postgres to travis' -U postgres
   - psql -c 'grant postgres to todolist' -U postgres
