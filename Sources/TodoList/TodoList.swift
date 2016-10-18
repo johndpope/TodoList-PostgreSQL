@@ -43,7 +43,7 @@ let ORDER = "ordering"
 
 public final class TodoList: TodoListAPI {
     
-    static let defaultPostgreHost = "/var/run/postgresql"
+    static let defaultPostgreHost = "localhost"
     static let defaultPostgrePort = Int32(5432)
     static let defaultDatabaseName = "todolist"
     static let defaultPostgreUsername = "travis"
