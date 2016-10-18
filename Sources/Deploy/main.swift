@@ -28,7 +28,7 @@ extension DatabaseConfiguration {
 
     init(withService: Service) {
         if let credentials = withService.credentials {
-            var hostname = credentials["public_hostname"].stringValue.split(byString: ":")
+            var hostname = credentials["public_hostname"].stringValue.split(separator: ":")
             self.host = hostname[0]
             self.username = credentials["username"].stringValue
             self.password = credentials["password"].stringValue

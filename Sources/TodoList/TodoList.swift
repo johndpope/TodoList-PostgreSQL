@@ -16,6 +16,7 @@
 
 import Foundation
 import SQL
+import Axis
 import PostgreSQL
 import HeliumLogger
 import LoggerAPI
@@ -67,8 +68,8 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(port)
             self.username = username!
             self.password = password!
-            let connectionString = URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")
-            postgreConnection = PostgreSQL.Connection(connectionString!)
+            let connectionString = URL(string: "postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")!
+            postgreConnection = try PostgreSQL.Connection(info: .init(connectionString))
 
             // Open the server
             try postgreConnection.open()
@@ -89,8 +90,8 @@ public final class TodoList: TodoListAPI {
             self.port = Int32(dbConfiguration.port!)
             self.username = dbConfiguration.username!
             self.password = dbConfiguration.password!
-            let connectionString = URI("postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")
-            postgreConnection = PostgreSQL.Connection(connectionString!)
+            let connectionString = URL(string: "postgres://\(self.username):\(self.password)@\(self.host):\(self.port)\(TodoList.defaultDatabaseName)")!
+            postgreConnection = try PostgreSQL.Connection(info: .init(connectionString))
 
             // Open
             try postgreConnection.open()
