@@ -37,7 +37,7 @@ extension DatabaseConfiguration {
         } else {
             self.host = "127.0.0.1"
             self.username = "todolist"
-            self.password = ""
+            self.password = "todopassword"
             self.port = UInt16(5432)
         }
         self.options = [String : AnyObject]()
